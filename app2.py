@@ -6,6 +6,15 @@ from bokeh.plotting import figure
 from bokeh.layouts import column
 
 
+# ダミーのグラフ（空の図）
+dummy_fig = figure(width=0, height=0)
+
+# ボタンとダミーグラフを一緒にレイアウト
+layout = column(dummy_fig, loc_button)
+
+# Streamlit に表示
+st.bokeh_chart(layout)
+
 
 st.title("スマホのGPS位置を取得")
 
