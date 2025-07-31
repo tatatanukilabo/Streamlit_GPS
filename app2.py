@@ -2,6 +2,10 @@ import streamlit as st
 from bokeh.models import CustomJS
 from bokeh.models.widgets import Button
 from streamlit_bokeh_events import streamlit_bokeh_events
+from bokeh.plotting import figure
+from bokeh.layouts import column
+
+
 
 st.title("スマホのGPS位置を取得")
 
@@ -13,6 +17,12 @@ loc_button.js_on_event("button_click", CustomJS(code="""
         }))
     })
 """))
+
+# Bokehレイアウトにボタンを追加
+layout = column(loc_button)
+
+# Streamlitに表示
+st.bokeh_chart(layout)
 
 result = streamlit_bokeh_events(
     loc_button,
