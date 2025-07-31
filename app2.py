@@ -1,23 +1,13 @@
-import streamlit as st
 from bokeh.models import CustomJS
 from bokeh.models.widgets import Button
-from streamlit_bokeh_events import streamlit_bokeh_events
 from bokeh.plotting import figure
 from bokeh.layouts import column
-
-
-# ダミーのグラフ（空の図）
-dummy_fig = figure(width=0, height=0)
-
-# ボタンとダミーグラフを一緒にレイアウト
-layout = column(dummy_fig, loc_button)
-
-# Streamlit に表示
-st.bokeh_chart(layout)
-
+import streamlit as st
+from streamlit_bokeh_events import streamlit_bokeh_events
 
 st.title("スマホのGPS位置を取得")
 
+# ① loc_button を先に定義
 loc_button = Button(label="現在地を取得")
 loc_button.js_on_event("button_click", CustomJS(code="""
     navigator.geolocation.getCurrentPosition((loc) => {
@@ -27,12 +17,14 @@ loc_button.js_on_event("button_click", CustomJS(code="""
     })
 """))
 
-# Bokehレイアウトにボタンを追加
-layout = column(loc_button)
+# ② ダミーのグラフを追加して描画可能にする
+dummy_fig = figure(width=0, height=0)
+layout = column(dummy_fig, loc_button)
 
-# Streamlitに表示
+# ③ Streamlit に表示
 st.bokeh_chart(layout)
 
+# ④ イベント取得
 result = streamlit_bokeh_events(
     loc_button,
     events="GET_LOCATION",
@@ -46,4 +38,3 @@ if result and "GET_LOCATION" in result:
     lon = result["GET_LOCATION"]["lon"]
     st.success(f"位置情報を取得しました：緯度 {lat}, 経度 {lon}")
     st.map(data={"lat": [lat], "lon": [lon]})
-    st.write(result["GET_LOCATION"])
